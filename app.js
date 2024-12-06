@@ -40,18 +40,11 @@ function submitInput(e) {
     saveData(todoData)
     console.log("else is running");
   }
-
-  // var obj = new ListData(inpValue);
-  // todoData = [...todoData, obj]
-  // console.log(todoData);
-  // saveData(todoData)
-  // inpValue = ""; // to update the local storage with new data
-  // console.log("else is running");
 }
 
 function renderListItems() {
   for (let i = 0; i < todoData.length; i++) {
-    boxElm.innerHTML += `<div style='display:flex; gap : 15px'>
+    boxElm.innerHTML += `<div style='display:flex; gap : 25px'>
       <input type='text' style="visibility : hidden" value='${todoData[i].listText}' />
       <p>${todoData[i].listText}</p>
       <button onClick='editItem(event,${todoData[i].id})'>edit</button>
@@ -62,12 +55,10 @@ function renderListItems() {
 renderListItems();
 
 function editItem(e, id) {
-  //   e.target.previousElementSibling.style.display ='none'
+
   e.target.previousElementSibling.style.visibility = 'hidden';
-  // e.target.previousElementSibling.previousElementSibling.style.display ='block'
+  e.target.nextElementSibling.removeAttribute("onclick");
   e.target.previousElementSibling.previousElementSibling.removeAttribute("style");
-  // var check = e.target.previousElementSibling.previousElementSibling.hasAttribute("style") ;
-  // console.log( "HII",check )
   e.target.innerText = 'save'
 
   var editInpValue = e.target.previousElementSibling.previousElementSibling.value;
@@ -93,6 +84,7 @@ function updatedItem(e, ID, inptValue) {
       e.target.previousElementSibling.previousElementSibling.style.visibility = "hidden";
       e.target.innerHTML = "edit"
       saveData(todoData)
+      e.target.nextElementSibling.setAttribute('onclick', `deleteItem(event, ${todoData[i].id})`);
       return;
 
     }
@@ -100,19 +92,17 @@ function updatedItem(e, ID, inptValue) {
 
 }
 
-function deleteItem(e,ID) {
-  // localStorage.removeItem(`listItem${e.target.parentElement.id}`)
-  // console.log(e.target.parentElement.id)
-  
-  for( let i = 0; i < todoData.length; i++){
-    
-    if(todoData[i].id === ID){
-      console.log( e.target.previousElementSibling.previousElementSibling.id)
-      todoData.splice( e.target.previousElementSibling.previousElementSibling.id , 1 );
-      
-      
-    }
+function deleteItem(e, ID) {
+  e.target.parentElement.remove();
+  console.log(ID)
+  var index = todoData.findIndex(obj => obj.id === ID);
+  if (index !== -1) {
+    todoData.splice(index, 1);
+
+    console.log(todoData);
   }
-  console.log(e.target.parentElement);
-  console.log(e.target.parentElement.remove())
+  // todoData = todoData // todoData has already updated just call the function
+  saveData(todoData);
+
+
 }
